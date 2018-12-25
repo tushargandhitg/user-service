@@ -13,4 +13,10 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 	@Modifying
 	@Query("UPDATE User SET credits = (:credits) WHERE userid = (:userid)")
 	public void updateCredits(@Param("userid") Integer userid, @Param("credits") Double credits);
+	
+	@Transactional(readOnly=false)
+	@Modifying
+	@Query("UPDATE User SET credits = (credits + (:credits)) WHERE userid = (:userid)")
+	public void addCredits(@Param("userid") Integer userid,
+							@Param("credits") Double credits);
 }
