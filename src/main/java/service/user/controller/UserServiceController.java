@@ -27,33 +27,47 @@ public class UserServiceController {
 		
 		Gson json = new Gson();
 		userRepository.addCredits(userid, credits);
+		
 		Optional<User> userDetails = userRepository.findById(userid);
+		
+		if( !userDetails.isPresent() ) {
+			User user = new User();
+			return json.toJson(user);
+		}
+		
 		String response = json.toJson(userDetails.get());
 		
 		return response;
 	}
 	
-	@RequestMapping(value="/api/v1/getcredits", method=RequestMethod.GET)
-	public double getUserCredits(
-			@RequestParam(value="userid", required=true) Integer userid
-			) {
-		return userRepository.findById(userid).get().getCredits();
-	}
+//	@RequestMapping(value="/api/v1/getcredits", method=RequestMethod.GET)
+//	public double getUserCredits(
+//			@RequestParam(value="userid", required=true) Integer userid
+//			) {
+//		return userRepository.findById(userid).get().getCredits();
+//	}
 	
-	@RequestMapping(value="/api/v1/getemail", method=RequestMethod.GET)
-	public String getUserEmail(
-			@RequestParam(value="userid", required=true) Integer userid
-			) {
-		return userRepository.findById(userid).get().getEmail();
-	}
+//	@RequestMapping(value="/api/v1/getemail", method=RequestMethod.GET)
+//	public String getUserEmail(
+//			@RequestParam(value="userid", required=true) Integer userid
+//			) {
+//		return userRepository.findById(userid).get().getEmail();
+//	}
 	
 	@RequestMapping(value="/api/v1/getuserdetails", method=RequestMethod.GET)
 	public String getUserDetails(
 			@RequestParam(value="userid", required=true) Integer userid
 			) {
 		
-			User user = userRepository.findById(userid).get();
 			Gson json = new Gson();
+			Optional<User> optionalUserObj = userRepository.findById(userid);
+			
+			if( !optionalUserObj.isPresent() ) {
+				User user = new User();
+				return json.toJson(user);
+			}
+			
+			User user = optionalUserObj.get();
 			String jsonString = json.toJson(user);
 			
 			return jsonString;
@@ -68,7 +82,5 @@ public class UserServiceController {
 		
 		return true;
 	}
-	
-	
 	
 }
